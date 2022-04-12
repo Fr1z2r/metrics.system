@@ -1,0 +1,19 @@
+name: Build & Test & Publish
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    uses: vostok/github.ci/.github/workflows/build.yml@master
+
+  test:
+    needs: build
+    uses: vostok/github.ci/.github/workflows/test.yml@master
+    with:
+      frameworks: '["net6.0", "net5.0", "netcoreapp3.1", "netcoreapp2.1", "net471"]'
+
+  publish:
+    needs: test
+    uses: vostok/github.ci/.github/workflows/publish.yml@master
+    secrets: 
+      token: ${{ secrets.NUGET_TOKEN }}
